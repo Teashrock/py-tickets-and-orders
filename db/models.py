@@ -69,7 +69,7 @@ class Order(models.Model):
         return f"<Order: {self.created_at}>"
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -84,13 +84,22 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
         hall = self.movie_session.cinema_hall
-        if (
-            1 <= self.row <= hall.rows
-        ) and (
-            1 <= self.seat <= hall.seats_in_row
-        ):
-            return
-        raise ValidationError("The seat is out of range!")
+        errors = {}
+
+        if not (1 <= self.row <= hall.rows):
+            errors["row"] = [
+                f"row number must be in available range: "
+                f"(1, rows): (1, {hall.rows})"
+            ]
+
+        if not (1 <= self.seat <= hall.seats_in_row):
+            errors["seat"] = [
+                f"seat number must be in available range: "
+                f"(1, seats_in_row): (1, {hall.seats_in_row})"
+            ]
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self) -> None:
         self.clean()
@@ -105,7 +114,10 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket")
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
+            )
         ]
 
 

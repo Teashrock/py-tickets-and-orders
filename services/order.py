@@ -1,13 +1,18 @@
-from django.db import transaction
-from django.contrib.auth import get_user_model
-User = get_user_model()
 from datetime import datetime
-
 from db.models import Order, Ticket
 
 
+from django.db import transaction
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: str | None=None) -> Order:
+def create_order(
+    tickets: list[dict],
+    username: str,
+    date: str | None = None
+) -> Order:
     user = User.objects.get(username=username)
 
     order_data = {"user": user}
@@ -27,7 +32,7 @@ def create_order(tickets: list[dict], username: str, date: str | None=None) -> O
     return order
 
 
-def get_orders(username=None):
+def get_orders(username: str | None = None) -> list[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
