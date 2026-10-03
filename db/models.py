@@ -66,7 +66,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at}>"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
@@ -101,15 +101,15 @@ class Ticket(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self) -> None:
+    def save(self, *args, **kwargs) -> None:
         self.clean()
-        super().save()
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return (
-            f"<Ticket: {self.movie_session.movie.title} "
+            f"{self.movie_session.movie.title} "
             f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})>"
+            f"(row: {self.row}, seat: {self.seat})"
         )
 
     class Meta:
