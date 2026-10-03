@@ -5,9 +5,9 @@ User = get_user_model()
 def create_user(
     username: str,
     password: str,
-    email: str | None = None,
-    first_name: str | None = None,
-    last_name: str | None = None
+    email: str = "",
+    first_name: str = "",
+    last_name: str = ""
 ) -> User:
     user = User.objects.create_user(
         username=username,
