@@ -19,9 +19,14 @@ def get_user(user_id) -> User:
 
 def update_user(user_id, username=None, password=None, email=None, first_name=None, last_name=None) -> None:
     user = User.objects.get(pk=user_id)
-    user.username = username
-    user.email = email
-    user.first_name = first_name
-    user.last_name = last_name
-    user.set_password(password)
+    if username:
+        user.username = username
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    if password:
+        user.set_password(password)
     user.save()
