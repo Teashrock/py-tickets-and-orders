@@ -83,10 +83,11 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def clean(self) -> None:
+        hall = self.movie_session.cinema_hall
         if (
-            self.seat in range(1, self.movie_session.cinema_hall.seats_in_row + 1)
+            1 <= self.row <= hall.rows
         ) and (
-            self.row in range(1, self.movie_session.cinema_hall.rows + 1)
+            1 <= self.seat <= hall.seats_in_row
         ):
             return
         raise ValidationError("The seat is out of range!")
