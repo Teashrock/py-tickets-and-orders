@@ -98,6 +98,15 @@ class Ticket(models.Model):
                 f"(1, seats_in_row): (1, {hall.seats_in_row})"
             ]
 
+        if Ticket.objects.filter(
+            movie_session=self.movie_session,
+            row=self.row,
+            seat=self.seat
+        ).exclude(pk=self.pk).exists():
+            errors["__all__"] = [
+                "This seat is already taken for this movie session."
+            ]
+
         if errors:
             raise ValidationError(errors)
 
