@@ -3,12 +3,25 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-from db.models import Order
+from db.models import Order, Ticket
 
 
 @transaction.atomic
 def create_order(tickets: list[dict], username: str, date: str | None=None) -> Order:
-    result = Order.objects.create(tickets=tickets, username=username)
-    if date is not None:
-        result.created_at = date
-    return result
+    user = User.objects.get(username=username)
+
+    order_data = {"user": user}
+    if date:
+        order_data["created_at"] = date
+
+    order = Order.objects.create(**order_data)
+
+    for ticket_data in tickets:
+        Ticket.objects.create(
+            order=order,
+            movie_session_id=ticket_data["movie_session"],
+            row=ticket_data["row"],
+            seat=ticket_data["seat"]
+        )
+
+    return order
