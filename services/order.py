@@ -17,7 +17,6 @@ def create_order(
     user = User.objects.get(username=username)
     order = Order.objects.create(user=user)
 
-    # If date is provided, parse and set it
     if date:
         order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
         order.save()
