@@ -25,3 +25,9 @@ def create_order(tickets: list[dict], username: str, date: str | None=None) -> O
         )
 
     return order
+
+
+def get_orders(username=None):
+    if username:
+        return Order.objects.filter(user__username=username)
+    return Order.objects.all()
