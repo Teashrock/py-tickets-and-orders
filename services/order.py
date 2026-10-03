@@ -15,12 +15,12 @@ def create_order(
     date: str | None = None
 ) -> Order:
     user = User.objects.get(username=username)
+    order = Order.objects.create(user=user)
 
-    order_data = {"user": user}
+    # If date is provided, parse and set it
     if date:
-        order_data["created_at"] = datetime.strptime(date, "%Y-%m-%d %H:%M")
-
-    order = Order.objects.create(**order_data)
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.save()
 
     for ticket_data in tickets:
         Ticket.objects.create(
