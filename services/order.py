@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
+from datetime import datetime
 
 from db.models import Order, Ticket
 
@@ -12,7 +12,7 @@ def create_order(tickets: list[dict], username: str, date: str | None=None) -> O
 
     order_data = {"user": user}
     if date:
-        order_data["created_at"] = date
+        order_data["created_at"] = datetime.strptime(date, "%Y-%m-%d %H:%M")
 
     order = Order.objects.create(**order_data)
 
